@@ -1,7 +1,6 @@
 const mongoose = require( "mongoose" );
 const express = require( "express" );
 const requireAll = require( "../requireAll" );
-const crud = require( "../lib/rest" );
 const Log = require( "debug" )( "app:model" );
 
 const plugins = {
@@ -12,15 +11,6 @@ const models = requireAll( "./model/schema" );
 const extenders = requireAll( "./model/extender" );
 
 mongoose.Promise = global.Promise;
-
-let ext = {};
-
-for ( let modelname in models ) {
-
-	doModel( doSchema( modelname ), modelname );
-
-	ext[ modelname ] = ( extenders[ modelname ] && extenders[ modelname ].useRouter ) || null;
-};
 
 const doSchema = ( modelname ) => {
 	let schema = models[ modelname ].schema;
@@ -47,6 +37,15 @@ const doModel = ( schema, modelname ) => {
 	if ( extenders[ modelname ] && extenders[ modelname ].useModel ) {
 		extenders[ modelname ].useModel( model );
 	};
+};
+
+let ext = {};
+
+for ( let modelname in models ) {
+
+	doModel( doSchema( modelname ), modelname );
+
+	ext[ modelname ] = ( extenders[ modelname ] && extenders[ modelname ].useRouter ) || null;
 };
 
 module.exports = ext;

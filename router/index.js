@@ -1,5 +1,6 @@
 const express = require( 'express' );
 const ext = require( '../model' );
+const rest = require( '../lib/rest' );
 
 const router = express.Router();
 
