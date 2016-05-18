@@ -41,6 +41,8 @@ app.use( ( req, res, next ) => {
 
 app.use( '/api', require( './router' ) );
 
+app.use( '*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'index.html' ) ) );
+
 http.listen( config.PORT, () => {
 	Log( 'listening on ', config.PORT );
 } );
