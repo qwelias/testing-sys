@@ -26,6 +26,9 @@ module.exports = config = Object.freeze({
             getID: function(session){
                 return session && session.passport && session.passport[this.model];
             }
+        },
+        question:{
+            types:['choice']
         }
     }
 });
