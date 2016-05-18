@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script type="text/javascript">
+            (function() {
+                this.document.write("<base href='//" + document.location.host + "/' />");
+                this.site = {}
+            })();
+
+        </script>
+        <link rel="stylesheet"
+            href="css/fa.css">
+        <link rel="stylesheet"
+            href="css/style.css">
+        <script href="lib/promise.js"></script>
+        <script href="lib/jq-ajax-promise.js"></script>
+        <script href="lib/jq.js"></script>
+        <script href="lib/ko.js"></script>
+        <script href="lib/ko-dt.js"></script>
+        <script href="lib/pager.js"></script>
+        <script href="lib/server.js"></script>
+    </head>
+
+    <body>
+        <div id="editor"
+            data-bind="page: {id: 'editor', sourceOnShow: 'pages/editor.html'}"></div>
+    </body>
+
+    <script type="text/html"
+        id="pagination">
+        <!-- ko if:$data.pages().length > 1 -->
+        <ul class='paginator'>
+            <li data-bind="css:$data.isFirstPage()?'disabled':''">
+                <a href=""
+                    data-bind="click: $data.prevPage">
+                    <i class="fa fa-chevron-left"
+                        style="vertical-align: text-bottom;"></i>
+                </a>
+            </li>
+            <!-- ko foreach: $data.pages() -->
+            <!-- ko if: $data == "ellipsis" -->
+            <li class="disabled">
+                <a>...</a>
+            </li>
+            <!-- /ko -->
+            <!-- ko if: $data != "ellipsis" -->
+            <li data-bind="css: { 'active': $data === ($parent.pageIndex() + 1)}">
+                <a href=""
+                    data-bind="text: $data, click: $parent.moveToPage" /></a>
+            </li>
+            <!-- /ko -->
+            <!-- /ko -->
+            <li data-bind="css:$data.isLastPage()?'disabled':''">
+                <a href=""
+                    data-bind="click: $data.nextPage">
+                    <i class="fa fa-chevron-right"
+                        style="vertical-align: text-bottom;"></i>
+                </a>
+            </li>
+        </ul>
+        <!-- /ko -->
+    </script>
+
+    <script href="index.js"></script>
+
+</html>
