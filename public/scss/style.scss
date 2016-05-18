@@ -1,0 +1,45 @@
+* {
+    font-family: "Ubuntu", sans-serif;
+}
+
+div#content-table {
+    text-align: center;
+    > table {
+        background-color: rgb(252, 252, 252);
+        margin: auto;
+        text-align: left;
+        border-collapse: collapse;
+        border: solid 1px rgb(180, 180, 180);
+
+        > thead {
+            border-bottom: solid 1px rgb(180, 180, 180);
+
+            > tr > th {
+                text-transform: uppercase;
+                border-bottom: 2px solid rgb(180, 180, 180);
+            }
+        }
+
+        td,
+        th {
+            padding: 0.5em;
+            border-top: 1px solid rgb(180, 180, 180);
+            border-bottom: 1px solid rgb(180, 180, 180);
+        }
+
+        tr {
+            &:hover {
+                background-color: rgb(245, 245, 245);
+            }
+        }
+    }
+
+    > ul {
+        padding: 0;
+        list-style: none;
+
+        > li{
+            display: inline-block;
+        }
+    }
+}

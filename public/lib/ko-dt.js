@@ -1,14 +1,13 @@
 ( function () {
 	"use strict";
 
-	ko.DataTable = function DataTable( config ) {
+	function DataTable( config ) {
 
-		if ( !( this instanceof DataTable ) ) return new DataTable();
+		if ( !( this instanceof DataTable ) ) return new DataTable( config );
 
-		var self = this;
-
-		this.items = ko.observableArray( config.items );
+		this.items = ko.observableArray( config.items || [] );
 		this.columns = config.columns;
+		this.name = config.name;
 
 		this.totalItems = ko.observable();
 		this.pageIndex = ko.observable( 0 );
@@ -26,8 +25,8 @@
 		} );
 
 		this.search.subscribe( function () {
-			self.moveToPage( 1 );
-		} );
+			this.moveToPage( 1 );
+		}.bind( this ) );
 
 		this.getData = ( config.getData && config.getData.bind( this ) ) || ( config.route && defaultDataGetter( config.route ).bind( this ) );
 
@@ -35,15 +34,15 @@
 
 	};
 
-	ko.DataTable.prototype.isFirstPage = function () {
+	DataTable.prototype.isFirstPage = function () {
 		return this.pageIndex() === 0
 	};
 
-	ko.DataTable.prototype.isLastPage = function () {
-		return this.pageIndex() === this.totalPages() - 1
+	DataTable.prototype.isLastPage = function () {
+		return this.pageIndex() === Math.ceil( this.totalItems() / this.pageSize ) - 1
 	};
 
-	ko.DataTable.prototype.pages = function () {
+	DataTable.prototype.pages = function () {
 		var pages = [];
 		var page, elem, last;
 		var totalPages = Math.ceil( this.totalItems() / this.pageSize );
@@ -67,61 +66,59 @@
 		return pages;
 	};
 
-	ko.DataTable.prototype.setSort = function ( row ) {
+	DataTable.prototype.setSort = function ( row ) {
 		if ( row == this.sortField() ) {
 			this.sortOrder( !this.sortOrder() );
 		} else {
 			this.sortField( row );
 			this.sortOrder( true );
 		}
-		this.reload();
+		return this.reload();
 	};
 
-	ko.DataTable.prototype.prevPage = function () {
+	DataTable.prototype.prevPage = function () {
 		if ( this.pageIndex() > 0 ) {
 			this.pageIndex( this.pageIndex() - 1 );
-			this.reload();
+			return this.reload();
 		}
 	};
 
-	ko.DataTable.prototype.nextPage = function () {
+	DataTable.prototype.nextPage = function () {
 		if ( this.pageIndex() + 1 < Math.ceil( this.totalItems() / this.pageSize ) ) {
 			this.pageIndex( this.pageIndex() + 1 );
-			this.reload();
+			return this.reload();
 		}
 	};
 
-	ko.DataTable.prototype.moveToPage = function ( index ) {
-		this.pageIndex( Math.max( index - 1, 0 ) );
-		this.reload();
+	DataTable.prototype.moveToPage = function ( index ) {
+		this.pageIndex( Math.max( Number( index ) - 1, 0 ) );
+		return this.reload();
 	};
 
-	ko.DataTable.prototype.reload = function ( cb ) {
-		if ( !this.getData ) cb && cb();
+	DataTable.prototype.reload = function () {
+		if ( !this.getData ) return Promise.resolve();
 		this.pageLoader && this.pageLoader.load();
-		this.getData( function ( err ) {
+		return this.getData().then( function ( data ) {
+			console.log( data )
+			this.items( data.result.items );
+			this.totalItems( data.result.totalItems );
 			this.pageLoader && this.pageLoader.unload();
-			cb && cb( err );
+		}.bind( this ) ).catch( function ( e ) {
+			console.log( e );
 		} );
 	};
 
 	function defaultDataGetter( route ) {
-		return function getData( cb ) {
-			window.Server.get( route, {
-				size: this.pageSize(),
+		return function getData() {
+			return window.Server.get( route, {
+				size: this.pageSize,
 				index: this.pageIndex(),
-				sort: this.sortField(),
-				order: this.sortOrder(),
+				sort: ( this.sortOrder() ? '+' : '-' ) + this.sortField(),
 				search: this.search()
-			} ).then( function ( data ) {
-				this.items( data.items );
-				this.totalItems( data.totalItems );
-				cb && cb();
-			} ).catch( function ( e ) {
-				console.log(e);
-				cb && cb( err );
 			} );
 		};
 	};
+
+	ko.DataTable = DataTable;
 
 } )();

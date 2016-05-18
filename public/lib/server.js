@@ -18,10 +18,9 @@ window.Server = (function(){
         return function(url, data, done){
             console.log("Server@"+method, url, data);
             var _req = {
-                url: Server.www + url,
+                url: url,
                 type: method,
                 data: data,
-                dataType: "JSON",
                 success: done && _wrap(done),
                 error: done && function(xhr, text, e){
                     console.log(xhr.status, text, e)

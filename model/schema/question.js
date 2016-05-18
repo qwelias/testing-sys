@@ -11,7 +11,8 @@ module.exports = {
             type: T.String,
             trim: true,
             text: true,
-            required: true
+            required: true,
+            unique: true
         },
         options:{
             type: T.Mixed

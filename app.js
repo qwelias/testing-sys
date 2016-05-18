@@ -24,7 +24,7 @@ const sessionMiddleware = session( Object.assign( config.session, {
 
 app.use( bParser.json() );
 app.use( bParser.urlencoded( {
-	extended: false
+	extended: true
 } ) );
 
 app.use( express.static( Path.resolve( config.root, 'public' ) ) );
@@ -33,7 +33,7 @@ app.use( sessionMiddleware );
 app.use( userMiddlware );
 
 app.use( ( req, res, next ) => {
-	Log( '<=================================>\n\n\n' );
+	Log( '\n\n\n<=================================>' );
 	Log( req.method, req.path, req.query, req.body );
 	req.locals = req.locals || {};
 	next();

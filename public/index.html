@@ -6,8 +6,8 @@
         <title></title>
         <script type="text/javascript">
             (function() {
-                this.document.write("<base href='//" + document.location.host + "/' />");
-                this.site = {}
+                this.document.write("<base href='"+document.location.protocol+"//" + document.location.host + "/' />");
+                this._vm = {init:[]};
             })();
 
         </script>
@@ -15,55 +15,90 @@
             href="css/fa.css">
         <link rel="stylesheet"
             href="css/style.css">
-        <script href="lib/promise.js"></script>
-        <script href="lib/jq-ajax-promise.js"></script>
-        <script href="lib/jq.js"></script>
-        <script href="lib/ko.js"></script>
-        <script href="lib/ko-dt.js"></script>
-        <script href="lib/pager.js"></script>
-        <script href="lib/server.js"></script>
+        <script src="lib/promise.js"></script>
+        <script src="lib/jq.js"></script>
+        <script src="lib/jq.history.js"></script>
+        <script src="lib/jq-ajax-promise.js"></script>
+        <script src="lib/ko.js"></script>
+        <script src="lib/ko-dt.js"></script>
+        <script src="lib/pager.js"></script>
+        <script src="lib/server.js"></script>
     </head>
 
     <body>
-        <div id="editor"
-            data-bind="page: {id: 'editor', sourceOnShow: 'pages/editor.html'}"></div>
+        <div id="home"
+            data-bind="page: {id: 'home', role: 'start', sourceOnShow: 'pages/home.html'}">
+        </div>
     </body>
 
     <script type="text/html"
-        id="pagination">
-        <!-- ko if:$data.pages().length > 1 -->
-        <ul class='paginator'>
-            <li data-bind="css:$data.isFirstPage()?'disabled':''">
+        id="table">
+        <!-- ko if: items().length -->
+        <table>
+            <thead>
+                <tr data-bind="foreach: { data: columns, as: 'columnname'}">
+                    <!-- ko with: $parent -->
+                    <th class="text-capitalize" data-bind="click: function(){setSort(columnname)}">
+                        <!-- ko if: sortField() == columnname -->
+                        <i class="fa fa-sort-asc" data-bind="css:{'fa-sort-asc': sortOrder(), 'fa-sort-desc': !sortOrder()}"></i>
+                        <!-- /ko -->
+                        <span data-bind="text: columnname"></span>
+                    </th>
+                    <!-- /ko -->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: {data: items, as: 'item'}">
+                <!-- ko with: $parent -->
+                <tr data-bind="
+                    page-href: '/home/'+name+'/'+item._id,
+                    foreach: { data: columns, as: 'columnname'}
+                ">
+                    <td data-bind="
+                        text: item[columnname]
+                    ">
+                    </td>
+                </tr>
+                <!-- /ko -->
+            </tbody>
+        </table>
+        <!-- ko if: pages().length > 1 -->
+        <ul>
+            <li data-bind="css: isFirstPage() ? 'disabled' : ''">
                 <a href=""
-                    data-bind="click: $data.prevPage">
+                    data-bind="click: prevPage">
                     <i class="fa fa-chevron-left"
                         style="vertical-align: text-bottom;"></i>
                 </a>
             </li>
-            <!-- ko foreach: $data.pages() -->
-            <!-- ko if: $data == "ellipsis" -->
+            <!-- ko foreach: {data: pages(), as: 'page'} -->
+            <!-- ko with: $parent -->
+            <!-- ko if: page == "ellipsis" -->
             <li class="disabled">
                 <a>...</a>
             </li>
             <!-- /ko -->
-            <!-- ko if: $data != "ellipsis" -->
-            <li data-bind="css: { 'active': $data === ($parent.pageIndex() + 1)}">
+            <!-- ko if: page != "ellipsis" -->
+            <li data-bind="css: { 'active': page === (pageIndex() + 1)}">
                 <a href=""
-                    data-bind="text: $data, click: $parent.moveToPage" /></a>
+                    data-bind="text: page, click: function(){moveToPage(page)}" /></a>
             </li>
             <!-- /ko -->
             <!-- /ko -->
-            <li data-bind="css:$data.isLastPage()?'disabled':''">
+            <!-- /ko -->
+            <li data-bind="css: isLastPage() ? 'disabled' : ''">
                 <a href=""
-                    data-bind="click: $data.nextPage">
+                    data-bind="click: nextPage">
                     <i class="fa fa-chevron-right"
                         style="vertical-align: text-bottom;"></i>
                 </a>
             </li>
         </ul>
         <!-- /ko -->
+        <!-- /ko -->
     </script>
 
-    <script href="index.js"></script>
+    <script src="js/question.js"></script>
+    <script src="js/test.js"></script>
+    <script src="index.js"></script>
 
 </html>

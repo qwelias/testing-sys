@@ -1,5 +1,4 @@
 ( function () {
-	"use strict";
 
 	this.$.ajaxSetup( {
 		error: function ( jqXHR ) {
@@ -7,10 +6,16 @@
 		}
 	} );
 
+	Promise.all( this._vm.init ).then( function () {
+		console.log( "INITED" );
+	} ).catch( function ( e ) {
+		console.log( "INIT ERR:", e );
+	} );
+
 	this.pager.useHTML5history = true;
 	this.pager.Href5.history = this.History;
-	this.pager.extendWithPage( site.vm );
-	this.ko.applyBindings( site.vm );
+	this.pager.extendWithPage( this._vm );
+	this.ko.applyBindings( this._vm );
 	this.pager.startHistoryJs();
 
 } )();

@@ -6,7 +6,8 @@
             jqPromise.then(function(data, textStatus, jqXHR) {
                 resolve(data);
             }, function(jqXHR, textStatus, errorThrown) {
-                reject(jqXHR, textStatus, errorThrown);
+                if(jqXHR.status !== 200) reject(jqXHR);
+                else resolve(jqXHR.status);
             });
         });
         return promise;

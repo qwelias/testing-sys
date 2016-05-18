@@ -10,7 +10,8 @@ module.exports = {
             type: T.String,
             trim: true,
             index: true,
-            required: true
+            required: true,
+            unique: true
         },
         questions: [{
             type: T.ObjectId,
