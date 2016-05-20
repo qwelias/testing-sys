@@ -1,23 +1,33 @@
 ( function () {
+
 	this._vm.test = {
 		table: ko.DataTable( {
-			route: '/api/test',
+			class: Test,
 			columns: [ 'title' ],
 			defaultSort: 'created',
-			name: 'test',
 			pageSize: 3
 		} ),
-		wo: {
-			_id: ko.observable(),
-			title: ko.observable(),
-			questions: ko.observableArray()
-		},
-		save: function () {
-			return window.Server.save( '/api/test', ko.toJS( this.wo ) ).then( function () {
-
-			} ).catch( function ( e ) {
-				console.log( e );
-			} );
+		wo: null,
+		init: function(){
+			this.wo = Test();
 		}
 	}
+
 } )();
+
+function Test(data){
+	if ( !( this instanceof Test ) ) return new Test( data );
+
+	SObject.call(this, data || Test.default, Test.modelname);
+
+};
+
+Test.default = {
+	title: '',
+	questions: []
+};
+
+Test.modelname = 'test';
+
+Test.prototype = Object.create(SObject.prototype, {});
+Test.prototype.constructor = Test;

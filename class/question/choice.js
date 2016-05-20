@@ -4,7 +4,12 @@ function Choice( {
 	correct,
 	type
 } ) {
-	if ( !( this instanceof Choice ) ) return new Choice();
+	if ( !( this instanceof Choice ) ) return new Choice({
+		body,
+		options,
+		correct,
+		type
+	});
 
 	if ( !Array.isArray( correct ) ) correct = [ correct ];
 	this.correct = correct.map( opt => {
@@ -43,3 +48,5 @@ Object.defineProperties( Choice.prototype, {
 		}
 	}
 } );
+
+module.exports = Choice;

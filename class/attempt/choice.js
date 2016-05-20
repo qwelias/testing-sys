@@ -3,7 +3,11 @@ function Choice( {
 	question,
 	body
 } ) {
-	if ( !( this instanceof Choice ) ) return new Choice();
+	if ( !( this instanceof Choice ) ) return new Choice( {
+		user,
+		question,
+		body
+	} );
 
 	if ( !Array.isArray( body ) ) body = [ body ];
 	this.body = body.map( opt => {
@@ -30,3 +34,5 @@ Object.defineProperties( Choice.prototype, {
 		}
 	}
 } );
+
+module.exports = Choice;

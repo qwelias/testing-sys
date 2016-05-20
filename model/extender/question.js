@@ -3,6 +3,7 @@ const Log = require('debug')('app:model:extender:question');
 
 const useSchema = ( schema ) => {
 	schema.pre( 'save', function ( next ) {
+		Log(this)
 		if ( !this.type || typeof this.type !== 'string' || !question[ this.type ] ) throw new Error( 'Invalid input.' );
 		question[ this.type ]( this );
 		next();

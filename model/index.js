@@ -21,6 +21,13 @@ const doSchema = ( modelname ) => {
 	schema.static( "source", function () {
 		return models[ modelname ];
 	} );
+	schema.static( "filter", function (o) {
+		let schema = this.source().schema;
+		Object.keys(o).map(k => {
+			if(!(k in schema)) delete o[k];
+		});
+		return o;
+	} );
 	models[ modelname ].plugin && Object.keys(models[ modelname ].plugin).map( ( name ) => {
 		let plugin = plugins[ name ];
 		if ( !plugin ) return;

@@ -7,12 +7,15 @@
 
 		this.items = ko.observableArray( config.items || [] );
 		this.columns = config.columns;
-		this.name = config.name;
+		this.class = config.class;
+		this.actions = ko.observableArray(config.actions || []);
+
+		this.columns.push('action');
 
 		this.totalItems = ko.observable();
 		this.pageIndex = ko.observable( 0 );
-		this.pageSize = config.pageSize || 12;
-		this.pageRadius = config.pageRadius || 2;
+		this.pageSize = config.pageSize || 6;
+		this.pageRadius = config.pageRadius || 3;
 
 		this.sortField = ko.observable( config.defaultSort );
 		this.sortOrder = ko.observable( true );
@@ -28,7 +31,7 @@
 			this.moveToPage( 1 );
 		}.bind( this ) );
 
-		this.getData = ( config.getData && config.getData.bind( this ) ) || ( config.route && defaultDataGetter( config.route ).bind( this ) );
+		this.getData = ( config.getData && config.getData.bind( this ) ) || defaultDataGetter( config.model ).bind( this );
 
 		this.pageLoader = config.pageLoader;
 
@@ -43,25 +46,20 @@
 	};
 
 	DataTable.prototype.pages = function () {
-		var pages = [];
-		var page, elem, last;
+		var pages;
 		var totalPages = Math.ceil( this.totalItems() / this.pageSize );
 		var activePage = this.pageIndex() + 1;
 		var radius = this.pageRadius;
-		for ( page = 1; page <= totalPages; page++ ) {
-			if ( page == 1 || page == totalPages ) {
-				elem = page;
-			} else if ( activePage < 2 * radius + 1 ) {
-				elem = ( page <= 2 * radius + 1 ) ? page : "ellipsis";
-			} else if ( activePage > totalPages - 2 * radius ) {
-				elem = ( totalPages - 2 * radius <= page ) ? page : "ellipsis";
-			} else {
-				elem = ( Math.abs( activePage - page ) <= radius ? page : "ellipsis" );
-			}
-			if ( elem != "ellipsis" || last != "ellipsis" ) {
-				pages.push( elem );
-			}
-			last = elem;
+		pages = new Array( totalPages ).fill( 0 ).map( function ( e, i ) {
+			return ++i;
+		} );
+		var rPad = Math.min( totalPages, activePage + radius - ( activePage - radius - Math.max( activePage - radius, 1 ) ) );
+		var lPad = Math.max( activePage - radius - ( activePage + radius - Math.min( totalPages, activePage + radius ) ), 1 );
+		if(lPad != 1){
+			pages.splice(1, lPad-0, "ellipsis");
+		}
+		if(rPad != totalPages){
+			pages.splice(rPad-totalPages-2, totalPages-rPad+1, "ellipsis");
 		}
 		return pages;
 	};
@@ -100,7 +98,9 @@
 		this.pageLoader && this.pageLoader.load();
 		return this.getData().then( function ( data ) {
 			console.log( data )
-			this.items( data.result.items );
+			this.items( data.result.items.map(function(it){
+				return this.class(it);
+			}.bind(this)) );
 			this.totalItems( data.result.totalItems );
 			this.pageLoader && this.pageLoader.unload();
 		}.bind( this ) ).catch( function ( e ) {
@@ -108,9 +108,9 @@
 		} );
 	};
 
-	function defaultDataGetter( route ) {
+	function defaultDataGetter() {
 		return function getData() {
-			return window.Server.get( route, {
+			return window.Server.get( '/api/'+this.class.modelname, {
 				size: this.pageSize,
 				index: this.pageIndex(),
 				sort: ( this.sortOrder() ? '+' : '-' ) + this.sortField(),

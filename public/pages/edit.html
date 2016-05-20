@@ -1,0 +1,42 @@
+<div>
+    <form data-bind="with: _vm.test.wo">
+        <!-- ko alias: 'wo' -->
+        <input type="text"
+            data-bind="value: wo.data.title"
+            placeholder="title">
+        <ul data-bind="foreach: { data: wo.data.questions, as: 'q'}">
+            <li data-bind="text: q.data.body, css: { dragging: dragging },
+                    dragZone: {
+                        name: 'sort',
+                        dragStart: Draggable.dragStart,
+                        dragEnd: Draggable.dragEnd,
+                    },
+                    dragEvents:{
+                        accepts:'sort',
+                        dragOver: Draggable.reorder,
+                        data: {items: wo.data.questions, item: q }
+                    }
+                "></li>
+        </ul>
+        <button data-bind="click: wo.save">save</button>
+        <!-- /ko -->
+    </form>
+
+    <div>
+        <a class="button"
+            href=""
+            data-bind="page-href:'/new'">new</a>
+        <div id="content-table"
+            data-bind="template: {name: 'default-table-tmpl', data: _vm.question.table}"></div>
+    </div>
+</div>
+
+<div id="new"
+    data-bind="page: {
+            id: 'new',
+            sourceOnShow: 'pages/question.html',
+            withOnShow: function(cb,pg){
+                _vm.question.init();
+            }
+        }">
+</div>

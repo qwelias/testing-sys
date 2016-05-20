@@ -16,6 +16,9 @@ window.Server = (function(){
 
     var _f = function(method){
         return function(url, data, done){
+            data && Object.keys(data).map(k => {
+                if(data[k] === undefined || data[k] === null) delete data[k];
+            });
             console.log("Server@"+method, url, data);
             var _req = {
                 url: url,

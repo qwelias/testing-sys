@@ -1,24 +1,39 @@
 ( function () {
 	this._vm.question = {
 		table: ko.DataTable( {
-			route: '/api/question',
+			class: Question,
 			columns: [ 'body', 'type' ],
 			defaultSort: 'created',
-			name:'question'
+			name:'question',
+			actions:[{
+				name:'add',
+				f: function(){
+					_vm.test.wo.data.questions.push(Draggable(this));
+				}
+			}]
 		} ),
-		wo: {
-			_id: ko.observable(),
-			body: ko.observable(),
-			options: ko.observable(),
-			type: ko.observable(),
-			correct: ko.observable(),
-		},
-		save: function () {
-			return window.Server.save( '/api/question', ko.toJS( this.wo ) ).then( function () {
-
-			} ).catch( function ( e ) {
-				console.log( e );
-			} );
+		wo: null,
+		init: function(){
+			this.wo = Question();
 		}
 	}
 } )();
+
+function Question(data){
+	if ( !( this instanceof Question ) ) return new Question( data );
+
+	SObject.call(this, data || Question.default, Question.modelname);
+
+};
+
+Question.default = {
+	body: '',
+	type: '',
+	options: null,
+	correct: null
+};
+
+Question.modelname = 'question';
+
+Question.prototype = Object.create(SObject.prototype, {});
+Question.prototype.constructor = Question;

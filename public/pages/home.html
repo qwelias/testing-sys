@@ -1,7 +1,17 @@
-<div>
+<div id="nav">
     <a data-bind="page-href: 'editor'">editor</a>
     <a data-bind="page-href: 'testing'">testing</a>
 </div>
 <div id="editor"
-    data-bind="page: {id: 'editor', sourceOnShow: 'pages/editor.html'}">
+    data-bind="page: {id: 'editor', sourceOnShow: 'pages/editor.html', withOnShow:function(cb, pg){_vm.test.table.reload().then(cb)}}">
+</div>
+<div id="new"
+    data-bind="page: {
+        id: 'new',
+        sourceOnShow: 'pages/edit.html',
+        withOnShow: function(cb,pg){
+            _vm.test.init();
+            _vm.question.table.reload().then(cb);
+        }
+    }">
 </div>

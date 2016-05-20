@@ -1,3 +1,5 @@
-<div id="test"
-    data-bind="page: {id: 'test', sourceOnShow: 'pages/test.html', withOnShow:function(cb, pg){_vm.test.table.reload().then(cb)}}">
+<div>
+    <a class="button" href="" data-bind="page-href:'../new'">new</a>
 </div>
+<div id="content-table"
+    data-bind="template: {name: 'default-table-tmpl', data: _vm.test.table}"></div>
