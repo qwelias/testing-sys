@@ -1,7 +1,7 @@
 function Draggable( data ) {
-	if ( !( this instanceof Draggable ) ) return new Draggable( data );
-	Object.assign( this, data );
-	this.dragging = ko.observable( false );
+	data.dragging = ko.observable( false );
+
+	return data;
 };
 
 Draggable.dragStart = function ( item ) {

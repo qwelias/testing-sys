@@ -18,6 +18,7 @@ module.exports = {
             type: T.Mixed
         },
         correct:{
+            select: false,
             type: T.Mixed
         },
         type:{

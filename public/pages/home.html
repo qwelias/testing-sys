@@ -3,15 +3,22 @@
     <a data-bind="page-href: 'testing'">testing</a>
 </div>
 <div id="editor"
-    data-bind="page: {id: 'editor', sourceOnShow: 'pages/editor.html', withOnShow:function(cb, pg){_vm.test.table.reload().then(cb)}}">
-</div>
-<div id="new"
     data-bind="page: {
-        id: 'new',
-        sourceOnShow: 'pages/edit.html',
-        withOnShow: function(cb,pg){
-            _vm.test.init();
-            _vm.question.table.reload().then(cb);
+        id: 'editor',
+        sourceOnShow: 'pages/editor.html',
+        guard:function(pg,rt,cb){_vm.test.table.reload().then(cb)}
+    }">
+</div>
+<div id="test-edit"
+    data-bind="page: {
+        id: '?',
+        sourceOnShow: 'pages/edit-t.html',
+        guard: function(pg,rt,cb){
+            if(rt.length > 1) return cb();
+            Promise.all([
+                _vm.test.init(rt.pop()),
+                _vm.question.table.reload()
+            ]).then(cb);
         }
     }">
 </div>

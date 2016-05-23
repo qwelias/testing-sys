@@ -7,6 +7,7 @@
 
 		this.items = ko.observableArray( config.items || [] );
 		this.columns = config.columns;
+		this.goto = config.goto;
 		this.class = config.class;
 		this.actions = ko.observableArray(config.actions || []);
 
@@ -97,7 +98,6 @@
 		if ( !this.getData ) return Promise.resolve();
 		this.pageLoader && this.pageLoader.load();
 		return this.getData().then( function ( data ) {
-			console.log( data )
 			this.items( data.result.items.map(function(it){
 				return this.class(it);
 			}.bind(this)) );
@@ -106,6 +106,14 @@
 		}.bind( this ) ).catch( function ( e ) {
 			console.log( e );
 		} );
+	};
+
+	DataTable.prototype.itemRoute = function (item){
+		if(this.goto){
+			if(typeof this.goto == 'function') return this.goto(item);
+			else if(typeof this.goto == 'string') return this.goto + item.initial._id;
+		}
+		return './'+item.initial._id;
 	};
 
 	function defaultDataGetter() {

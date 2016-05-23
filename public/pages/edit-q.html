@@ -1,0 +1,41 @@
+<form data-bind="with: _vm.question.wo">
+    <!-- ko alias: 'wo' -->
+    <label>
+        <span>Question</span>
+        <textarea type="text"
+            data-bind="value: wo.data.body"
+            placeholder="question"></textarea>
+    </label>
+    <label>
+        <span>Type</span>
+        <select data-bind="
+        value: wo.data.type,
+        valueAllowUnset: false,
+        options: ['choice']">
+        </select>
+    </label>
+    <label>
+        <span>Options</span>
+        <a href="">
+            <i class="fa fa-plus"
+                aria-hidden="true"></i>
+        </a>
+        <ul data-bind="foreach: {data: wo.data.options, as: 'opt'}">
+            <li>
+                <a href="">
+                    <i class="fa fa-check-circle-o"
+                        aria-hidden="true"></i>
+                    <i class="fa fa-circle-o"
+                        aria-hidden="true"></i>
+                </a>
+                <input type="text" data-bind="value: opt"/>
+                <a href="">
+                    <i class="fa fa-ban"
+                        aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </label>
+    <button data-bind="click: wo.save">save</button>
+    <!-- /ko -->
+</form>

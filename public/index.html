@@ -54,7 +54,7 @@
             <thead>
                 <tr data-bind="foreach: { data: columns, as: 'columnname'}">
                     <!-- ko with: $parent -->
-                    <!-- ko ifnot: columnname == 'action' && !actions().length -->
+                    <!-- ko if: columnname != 'action' -->
                     <th class="text-capitalize"
                         data-bind="click: function(){setSort(columnname)}">
                         <!-- ko if: sortField() == columnname -->
@@ -64,21 +64,25 @@
                         <span data-bind="text: columnname"></span>
                     </th>
                     <!-- /ko -->
+                    <!-- ko if: columnname == 'action' && actions().length -->
+                    <th class="text-capitalize action">
+                        <span data-bind="text: columnname"></span>
+                    </th>
+                    <!-- /ko -->
                     <!-- /ko -->
                 </tr>
             </thead>
             <tbody data-bind="foreach: {data: items, as: 'item'}">
                 <!-- ko with: $parent -->
-                <tr data-bind="
-                    page-href: './'+item.initial._id,
-                    foreach: { data: columns, as: 'columnname'}">
+                <tr data-bind="foreach: { data: columns, as: 'columnname'}">
                     <!-- ko if: columnname == 'action' && $parent.actions().length -->
-                    <td data-bind="foreach:{data: $parent.actions, as:'action'}">
+                    <td class="action" data-bind="foreach:{data: $parent.actions, as:'action'}">
                         <button data-bind="click: action.f.bind(item), text: action.name"></button>
                     </td>
                     <!-- /ko -->
                     <!-- ko ifnot: columnname == 'action' -->
                     <td data-bind="
+                        page-href: $parent.itemRoute.call($parent, item),
                         text: item.data[columnname]">
                     </td>
                     <!-- /ko -->
