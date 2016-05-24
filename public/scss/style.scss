@@ -14,6 +14,8 @@ body {
         width: 60%;
         min-width: 50em;
         padding: 1em;
+        padding-bottom: 2em;
+        margin-bottom: 10em;
 
         > div#nav {
             border-bottom: solid 1px $bGreyColor;
@@ -55,6 +57,9 @@ button {
 }
 
 div#test-edit {
+    border-top: solid 1px $bGreyColor;
+    margin-top: 1em;
+    padding-top: 1em;
     > div:first-child {
         overflow: hidden;
 
@@ -64,6 +69,14 @@ div#test-edit {
             padding-right: 1em;
             border-right: solid 1px $bGreyColor;
             max-width: 40%;
+
+            > input[type=text] {
+                min-width: 13em;
+                border: none;
+                outline: none;
+                font-size: 1.5em;
+                border-bottom: dashed 1px black;
+            }
 
             > ol {
                 > li {
@@ -107,7 +120,7 @@ div#test-edit {
                         }
 
                         > input[type=text] {
-                            width: 20em;
+                            min-width: 20em;
                             border: none;
                             outline: none;
                             font-size: 1em;
@@ -131,7 +144,7 @@ div#test-edit {
     }
 }
 
-div#content-table {
+div.content-table {
     width: 100%;
     text-align: center;
     color: rgb(34, 34, 34);

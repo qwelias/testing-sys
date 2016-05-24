@@ -8,7 +8,8 @@
             (function() {
                 this.document.write("<base href='" + document.location.protocol + "//" + document.location.host + "/' />");
                 this._vm = {
-                    init: []
+                    init: [],
+                    guards: []
                 };
             })();
 
@@ -22,7 +23,6 @@
         <script src="lib/jq.history.js"></script>
         <script src="lib/jq-ajax-promise.js"></script>
         <script src="lib/ko.js"></script>
-        <script src="lib/ko-mapping.js"></script>
         <script src="lib/ko-bind.js"></script>
         <script src="lib/ko-dt.js"></script>
         <script src="lib/ko-dragdrop.js"></script>
@@ -33,8 +33,16 @@
     </head>
 
     <body>
-        <div id="home"
-            data-bind="page: {id: 'home', role: 'start', sourceOnShow: 'pages/home.html'}">
+        <div id="home">
+            <div id="editor"
+                data-bind="page: {
+                    id: 'editor',
+                    role: 'start',
+                    sourceOnShow: 'pages/tests.html',
+                    guard:GUARD,
+                    scrollToTop: false
+                }">
+            </div>
         </div>
     </body>
 
@@ -76,7 +84,8 @@
                 <!-- ko with: $parent -->
                 <tr data-bind="foreach: { data: columns, as: 'columnname'}">
                     <!-- ko if: columnname == 'action' && $parent.actions().length -->
-                    <td class="action" data-bind="foreach:{data: $parent.actions, as:'action'}">
+                    <td class="action"
+                        data-bind="foreach:{data: $parent.actions, as:'action'}">
                         <button data-bind="click: action.f.bind(item), text: action.name"></button>
                     </td>
                     <!-- /ko -->
@@ -124,8 +133,8 @@
         <!-- /ko -->
     </script>
 
-    <script src="js/question.js"></script>
-    <script src="js/test.js"></script>
+    <script src="js/editor/test.js"></script>
+    <script src="js/editor/question.js"></script>
     <script src="index.js"></script>
 
 </html>

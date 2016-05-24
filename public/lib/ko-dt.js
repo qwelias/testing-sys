@@ -9,6 +9,8 @@
 		this.columns = config.columns;
 		this.goto = config.goto;
 		this.class = config.class;
+		this.threshold = config.threshold || 0;
+		this.lastReload = 0;
 		this.actions = ko.observableArray(config.actions || []);
 
 		this.columns.push('action');
@@ -34,19 +36,17 @@
 
 		this.getData = ( config.getData && config.getData.bind( this ) ) || defaultDataGetter( config.model ).bind( this );
 
-		this.pageLoader = config.pageLoader;
-
 	};
 
-	DataTable.prototype.isFirstPage = function () {
+	DataTable.prototype.isFirstPage = function isFirstPage() {
 		return this.pageIndex() === 0
 	};
 
-	DataTable.prototype.isLastPage = function () {
+	DataTable.prototype.isLastPage = function isLastPage() {
 		return this.pageIndex() === Math.ceil( this.totalItems() / this.pageSize ) - 1
 	};
 
-	DataTable.prototype.pages = function () {
+	DataTable.prototype.pages = function pages() {
 		var pages;
 		var totalPages = Math.ceil( this.totalItems() / this.pageSize );
 		var activePage = this.pageIndex() + 1;
@@ -65,50 +65,51 @@
 		return pages;
 	};
 
-	DataTable.prototype.setSort = function ( row ) {
+	DataTable.prototype.setSort = function setSort( row ) {
 		if ( row == this.sortField() ) {
 			this.sortOrder( !this.sortOrder() );
 		} else {
 			this.sortField( row );
 			this.sortOrder( true );
 		}
-		return this.reload();
+		return this.reload(true);
 	};
 
-	DataTable.prototype.prevPage = function () {
+	DataTable.prototype.prevPage = function prevPage() {
 		if ( this.pageIndex() > 0 ) {
 			this.pageIndex( this.pageIndex() - 1 );
-			return this.reload();
+			return this.reload(true);
 		}
 	};
 
-	DataTable.prototype.nextPage = function () {
+	DataTable.prototype.nextPage = function nextPage() {
 		if ( this.pageIndex() + 1 < Math.ceil( this.totalItems() / this.pageSize ) ) {
 			this.pageIndex( this.pageIndex() + 1 );
-			return this.reload();
+			return this.reload(true);
 		}
 	};
 
-	DataTable.prototype.moveToPage = function ( index ) {
+	DataTable.prototype.moveToPage = function moveToPage( index ) {
 		this.pageIndex( Math.max( Number( index ) - 1, 0 ) );
-		return this.reload();
+		return this.reload(true);
 	};
 
-	DataTable.prototype.reload = function () {
+	DataTable.prototype.reload = function reload(force) {
+		var now = Date.now();
+		if(now - this.lastReload <= this.threshold && force !== true) return Promise.resolve();
 		if ( !this.getData ) return Promise.resolve();
-		this.pageLoader && this.pageLoader.load();
 		return this.getData().then( function ( data ) {
 			this.items( data.result.items.map(function(it){
 				return this.class(it);
 			}.bind(this)) );
 			this.totalItems( data.result.totalItems );
-			this.pageLoader && this.pageLoader.unload();
+			this.lastReload = now;
 		}.bind( this ) ).catch( function ( e ) {
 			console.log( e );
 		} );
 	};
 
-	DataTable.prototype.itemRoute = function (item){
+	DataTable.prototype.itemRoute = function itemRoute(item){
 		if(this.goto){
 			if(typeof this.goto == 'function') return this.goto(item);
 			else if(typeof this.goto == 'string') return this.goto + item.initial._id;

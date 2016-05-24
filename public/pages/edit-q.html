@@ -1,10 +1,9 @@
 <form data-bind="with: _vm.question.wo">
     <!-- ko alias: 'wo' -->
     <label>
-        <span>Question</span>
         <textarea type="text"
             data-bind="value: wo.data.body"
-            placeholder="question"></textarea>
+            placeholder="Question"></textarea>
     </label>
     <label>
         <span>Type</span>
@@ -16,24 +15,37 @@
     </label>
     <label>
         <span>Options</span>
-        <a href="">
+        <a href="" data-bind="click: function(){wo.data.options.push(ko.observable(''))}">
             <i class="fa fa-plus"
                 aria-hidden="true"></i>
         </a>
-        <ul data-bind="foreach: {data: wo.data.options, as: 'opt'}">
+        <ul data-bind="foreach: wo.data.options">
+            <!-- ko let: { opt: wo.data.options()[$index()] } -->
             <li>
-                <a href="">
+                <a href="" data-bind="
+                    visible: ko.toJS(wo.data.correct).indexOf(opt()) > -1,
+                    click: function(){wo.data.correct.remove(opt)}">
                     <i class="fa fa-check-circle-o"
                         aria-hidden="true"></i>
+                </a>
+                <a href="" data-bind="
+                    visible: ko.toJS(wo.data.correct).indexOf(opt()) < 0,
+                    click: function(){wo.data.correct.push(opt)}">
                     <i class="fa fa-circle-o"
                         aria-hidden="true"></i>
                 </a>
-                <input type="text" data-bind="value: opt"/>
-                <a href="">
+                <input type="text"
+                    placeholder="Option"
+                    data-bind="value: opt" />
+                <a href="" data-bind="click: function(){
+                    wo.data.options.remove(opt);
+                    wo.data.correct.remove(opt)
+                }">
                     <i class="fa fa-ban"
                         aria-hidden="true"></i>
                 </a>
             </li>
+            <!-- /ko -->
         </ul>
     </label>
     <button data-bind="click: wo.save">save</button>

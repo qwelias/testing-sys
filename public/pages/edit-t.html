@@ -3,7 +3,7 @@
         <!-- ko alias: 'wo' -->
         <input type="text"
             data-bind="value: wo.data.title"
-            placeholder="title">
+            placeholder="Title">
         <ol data-bind="foreach: { data: wo.data.questions, as: 'q'}">
             <li data-bind="css: { dragging: dragging },
                     dragZone: {
@@ -27,8 +27,8 @@
     <div>
         <a class="button"
             href=""
-            data-bind="page-href:'./new'">new</a>
-        <div id="content-table"
+            data-bind="page-href:window.location.pathname+'/new'">new</a>
+        <div class="content-table"
             data-bind="template: {name: 'default-table-tmpl', data: _vm.question.table}"></div>
     </div>
 </div>
@@ -37,11 +37,6 @@
     data-bind="page: {
         id: '?',
         sourceOnShow: 'pages/edit-q.html',
-        guard: function(pg,rt,cb){
-            if(rt.length > 1) return cb();
-            Promise.all([
-                _vm.question.init(rt.pop())
-            ]).then(cb);
-        }
+        scrollToTop: false
     }">
 </div>

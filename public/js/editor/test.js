@@ -1,29 +1,35 @@
 ( function () {
+	"use strict";
 
-	this._vm.test = {
+	window._vm.test = {
 		table: ko.DataTable( {
 			class: Test,
 			columns: [ 'title' ],
 			defaultSort: 'created',
 			pageSize: 3,
-			goto: '../'
+			threshold: 30 * 1000,
+			goto: '/editor/'
 		} ),
 		wo: null,
-		init: function ( id ) {
+		init: function init( id ) {
 			if ( id != 'new' ) {
 				return Server.get( '/api/test/' + id, {
 					pop: 'questions'
 				} ).then( function ( data ) {
 					data = data.result;
+					if ( this.wo && data._id == this.wo.initial._id ) return;
 					data.questions = data.questions.map( function ( q ) {
 						return Draggable( Question( q ) );
 					} );
 					return Promise.resolve( this.wo = Test( data ) );
 				}.bind( this ) );
-			}
+			};
 			return Promise.resolve( this.wo = Test() );
 		}
-	}
+	};
+
+	window._vm.guards.push( [ window._vm.test.table.reload.bind( window._vm.test.table ) ] );
+	window._vm.guards.push( [ window._vm.test.init.bind( window._vm.test ) ] );
 
 	function Test( data ) {
 		if ( !( this instanceof Test ) ) return new Test( data );
@@ -46,15 +52,19 @@
 		this.data.questions = this.data.questions().map( function ( it ) {
 			return it.initial._id;
 		} );
-		SObject.prototype.save.call( this );
+		return SObject.prototype.save.call( this ).then( function () {
+			var p = window.location.pathname.split( '/' );
+			p = p.slice( 0, 2 );
+			window.pager.navigate( p.join( '/' ) );
+		} );
 	};
 
-	Test.prototype.rmQuestion = function ( q ) {
+	Test.prototype.rmQuestion = function rmQuestion( q ) {
 		this.data.questions.remove( function ( e ) {
 			return e.initial._id == q.initial._id;
 		} );
 	};
 
-	this.Test = Test;
+	window.Test = Test;
 
 } )();

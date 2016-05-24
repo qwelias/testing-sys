@@ -1,18 +1,32 @@
-function SObject( data, model ) {
-	if ( !( this instanceof SObject ) ) return new SObject( data, model );
+(function(){
+	"use strict";
 
-	this.initial = JSON.parse( JSON.stringify( data ) );
+	function SObject( data, model ) {
+		if ( !( this instanceof SObject ) ) return new SObject( data, model );
 
-    this.model = model;
+		this.initial = JSON.parse( JSON.stringify( ko.toJS( data ) ) );
 
-	this.data = ko.mapping.fromJS(data);
+		this.model = model;
 
-};
+		this.data = SObject.fromJS( data );
 
-SObject.prototype.toJS = function toJS(){
-    return ko.mapping.toJS(this.data);
-};
+	};
 
-SObject.prototype.save = function save(){
-    return Server.save('/api/'+this.model, this.toJS());
-};
+	SObject.fromJS = function fromJS( o ) {
+		Object.keys( o ).map( function ( k ) {
+			if ( Array.isArray( o[ k ] ) ) o[ k ] = ko.observableArray( o[ k ] );
+			else o[ k ] = ko.observable( o[ k ] );
+		} );
+		return o;
+	};
+
+	SObject.prototype.toJS = function toJS() {
+		return ko.toJS( this.data );
+	};
+
+	SObject.prototype.save = function save() {
+		return Server.save( '/api/' + this.model, this.toJS() );
+	};
+
+	window.SObject = SObject;
+})();

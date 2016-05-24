@@ -23,22 +23,32 @@
 		};
 	}
 
-	this.$.ajaxSetup( {
+	window.$.ajaxSetup( {
 		error: function ( jqXHR ) {
-			if ( jqXHR.status === 401 ) this.location.reload();
+			if ( jqXHR.status === 401 ) window.location.reload();
 		}
 	} );
 
-	Promise.all( this._vm.init ).then( function () {
+	window.GUARD = function ( pg, rt, cb ) {
+		var all = [];
+		rt.map( function ( id, i ) {
+			all.push( Promise.all( window._vm.guards[ i ].map( function ( g ) {
+				return g( id );
+			} ) ) );
+		} );
+		Promise.all(all).then(cb);
+	};
+
+	Promise.all( window._vm.init ).then( function () {
 		console.log( "INITED" );
 	} ).catch( function ( e ) {
 		console.log( "INIT ERR:", e );
 	} );
 
-	this.pager.useHTML5history = true;
-	this.pager.Href5.history = this.History;
-	this.pager.extendWithPage( this._vm );
-	this.ko.applyBindings( this._vm );
-	this.pager.startHistoryJs();
+	window.pager.useHTML5history = true;
+	window.pager.Href5.history = window.History;
+	window.pager.extendWithPage( window._vm );
+	window.ko.applyBindings( window._vm );
+	window.pager.startHistoryJs();
 
 } )();

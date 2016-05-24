@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script type="text/javascript">
+            (function() {
+                this.document.write("<base href='" + document.location.protocol + "//" + document.location.host + "/' />");
+                this._vm = {
+                    init: [],
+                    guards: []
+                };
+            })();
+
+        </script>
+        <link rel="stylesheet"
+            href="css/fa.css">
+        <link rel="stylesheet"
+            href="css/style.css">
+        <script src="lib/promise.js"></script>
+        <script src="lib/jq.js"></script>
+        <script src="lib/jq.history.js"></script>
+        <script src="lib/jq-ajax-promise.js"></script>
+        <script src="lib/ko.js"></script>
+        <script src="lib/ko-bind.js"></script>
+        <script src="lib/ko-dt.js"></script>
+        <script src="lib/ko-dragdrop.js"></script>
+        <script src="lib/SObject.js"></script>
+        <script src="lib/Draggable.js"></script>
+        <script src="lib/pager.js"></script>
+        <script src="lib/server.js"></script>
+    </head>
+
+    <body>
+        <div id="home">
+
+        </div>
+    </body>
+
+    <script type="text/html"
+        id="default-table-tmpl">
+        <!-- ko if: items().length -->
+        <!-- ko template: 'default-table-content-tmpl' -->
+        <!-- /ko -->
+        <!-- ko template: 'default-pagination-tmpl' -->
+        <!-- /ko -->
+        <!-- /ko -->
+    </script>
+
+    <script type="text/html"
+        id="default-table-content-tmpl">
+        <table>
+            <thead>
+                <tr data-bind="foreach: { data: columns, as: 'columnname'}">
+                    <!-- ko with: $parent -->
+                    <!-- ko if: columnname != 'action' -->
+                    <th class="text-capitalize"
+                        data-bind="click: function(){setSort(columnname)}">
+                        <!-- ko if: sortField() == columnname -->
+                        <i class="fa fa-sort-asc"
+                            data-bind="css:{'fa-sort-asc': sortOrder(), 'fa-sort-desc': !sortOrder()}"></i>
+                        <!-- /ko -->
+                        <span data-bind="text: columnname"></span>
+                    </th>
+                    <!-- /ko -->
+                    <!-- ko if: columnname == 'action' && actions().length -->
+                    <th class="text-capitalize action">
+                        <span data-bind="text: columnname"></span>
+                    </th>
+                    <!-- /ko -->
+                    <!-- /ko -->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: {data: items, as: 'item'}">
+                <!-- ko with: $parent -->
+                <tr data-bind="foreach: { data: columns, as: 'columnname'}">
+                    <!-- ko if: columnname == 'action' && $parent.actions().length -->
+                    <td class="action"
+                        data-bind="foreach:{data: $parent.actions, as:'action'}">
+                        <button data-bind="click: action.f.bind(item), text: action.name"></button>
+                    </td>
+                    <!-- /ko -->
+                    <!-- ko ifnot: columnname == 'action' -->
+                    <td data-bind="
+                        page-href: $parent.itemRoute.call($parent, item),
+                        text: item.data[columnname]">
+                    </td>
+                    <!-- /ko -->
+                </tr>
+                <!-- /ko -->
+            </tbody>
+        </table>
+    </script>
+
+    <script type="text/html"
+        id="default-pagination-tmpl">
+        <!-- ko if: pages().length > 1 -->
+        <ul>
+            <li class="button"
+                data-bind="click: prevPage, css: {'disabled': isFirstPage()}">
+                <i class="fa fa-chevron-left"
+                    style="vertical-align: text-bottom;"></i>
+            </li>
+            <!-- ko foreach: {data: pages(), as: 'page'} -->
+            <!-- ko with: $parent -->
+            <!-- ko if: page == "ellipsis" -->
+            <li class="button disabled">
+                ...
+            </li>
+            <!-- /ko -->
+            <!-- ko if: page != "ellipsis" -->
+            <li class="button"
+                data-bind="text: page, click: function(){moveToPage(page)}, css: {'active': page == pageIndex()+1}">
+            </li>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- /ko -->
+            <li class="button"
+                data-bind="click: nextPage, css: {'disabled': isLastPage()}">
+                <i class="fa fa-chevron-right"
+                    style="vertical-align: text-bottom;"></i>
+            </li>
+        </ul>
+        <!-- /ko -->
+    </script>
+
+    <script src="js/test/test.js"></script>
+    <script src="js/test/question.js"></script>
+    <script src="index.js"></script>
+
+</html>
