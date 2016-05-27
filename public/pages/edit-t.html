@@ -17,7 +17,11 @@
                         data: {items: wo.data.questions, item: q }
                     }">
                 <span data-bind="text: q.data.body"></span>
-                <a href="" data-bind="click: wo.rmQuestion.bind(wo, q)"><i class="fa fa-ban" aria-hidden="true"></i></a>
+                <a href=""
+                    data-bind="click: wo.rmQuestion.bind(wo, q)">
+                    <i class="fa fa-ban"
+                        aria-hidden="true"></i>
+                </a>
             </li>
         </ol>
         <button data-bind="click: wo.save">save</button>
@@ -27,7 +31,12 @@
     <div>
         <a class="button"
             href=""
-            data-bind="page-href:window.location.pathname+'/new'">new</a>
+            data-bind="
+                click:_vm.question.table.itemRoute.bind(_vm.question.table, {
+                    initial: {
+                        _id: 'new'
+                    }
+                }, $page)">new</a>
         <div class="content-table"
             data-bind="template: {name: 'default-table-tmpl', data: _vm.question.table}"></div>
     </div>

@@ -7,7 +7,7 @@ const router = express.Router();
 
 Object.keys( ext ).map( modelname => {
 	let mRouter = express.Router();
-	ext[ modelname ] && ext[ modelname ]( modelname, mRouter );
+	ext[ modelname ] && ext[ modelname ]( mRouter );
 	rest( modelname, mRouter );
 	router.use( `/${modelname}`, mRouter );
 } );

@@ -9,9 +9,16 @@
 			name: 'question',
 			threshold: 30 * 1000,
 			goto: function ( item ) {
-				var p = window.location.pathname.split( '/' );
-				p = p.slice( 0, 3 );
-				return p.join( '/' ) + '/' + item.initial._id;
+				var path = window.History.getState().url.split( '/' );
+				var pre = '/';
+				var method = 'pushState';
+				if(path.length > 5){
+					pre = '+';
+					method == 'replaceState';
+					if(item.initial._id != 'new' && path[path.length-1].indexOf(item.initial._id) > -1) return;
+				}
+				var p = pre + item.initial._id;
+				window.History[ method ]( null, null, path.join( '/' ) + p );
 			},
 			actions: [ {
 				name: 'add',
@@ -24,25 +31,35 @@
 				}
 			} ]
 		} ),
-		wo: null,
-		init: function init( id ) {
-			if ( id != 'new' ) {
-				return Server.get( '/api/question/' + id, {
-					select: '+correct'
-				} ).then( function ( data ) {
-					data = data.result;
-					data.options = data.options.map( function ( opt ) {
-						return ko.observable( opt );
-					} );
-					data.correct = data.correct.map( function ( opt ) {
-						return data.options.find( function ( it ) {
-							return it() == opt;
+		wos: [],
+		init: function init( ids ) {
+			ids = ids.split( ' ' );
+			this.wos.length = Math.max( this.wos.length, ids.length );
+			return Promise.all( ids.map( function ( id, i ) {
+				console.log('BBBBBBBBBBBBBB', id);
+				var ex = this.wos[ i ];
+				if ( ex ) {
+					if ( id == 'new' && !ex.initial._id ) return Promise.resolve();
+					if ( id != 'new' && ex.initial._id == id ) return Promise.resolve();
+				}
+				if ( id != 'new' ) {
+					return Server.get( '/api/question/' + id, {
+						select: '+correct'
+					} ).then( function ( data ) {
+						data = data.result;
+						data.options = data.options.map( function ( opt ) {
+							return ko.observable( opt );
 						} );
-					} );
-					return Promise.resolve( this.wo = Question( data ) );
-				}.bind( this ) );
-			}
-			return Promise.resolve( this.wo = Question() );
+						data.correct = data.correct.map( function ( opt ) {
+							return data.options.find( function ( it ) {
+								return it() == opt;
+							} );
+						} );
+						return Promise.resolve( this.wos[ i ] = Question( data ) );
+					}.bind( this ) );
+				}
+				return Promise.resolve( this.wos[ i ] = Question() );
+			}.bind( this ) ) );
 		}
 	}
 
@@ -54,12 +71,17 @@
 		SObject.call( this, data || Question.default, Question.modelname );
 	};
 
-	Question.default = {
-		body: '',
-		type: '',
-		options: [],
-		correct: []
-	};
+	Object.defineProperty( Question, 'default', {
+		enumerable: true,
+		get: function () {
+			return {
+				body: '',
+				type: '',
+				options: [],
+				correct: []
+			};
+		}
+	} );
 
 	Question.modelname = 'question';
 
@@ -79,10 +101,25 @@
 		} );
 
 		return SObject.prototype.save.call( this ).then( function () {
-			var p = window.location.pathname.split( '/' );
-			p = p.slice( 0, 3 );
-			window.pager.navigate( p.join( '/' ) );
-		} );
+			var url = window.History.getState().url.split( '/' );
+			var p = url.pop();
+			var i = window._vm.question.wos.findIndex( function ( q ) {
+				if ( this.initial._id ) {
+					return q.initial._id == this.initial._id;
+				} else {
+					return q.data.body() == this.data.body();
+				}
+			}.bind( this ) );
+			window._vm.question.wos.splice( i, 1 );
+			p = window._vm.question.wos.map( function ( q ) {
+				if ( q.initial._id ) return q.initial._id;
+				else return 'new';
+			}.bind( this ) );
+			console.log('AAAAAAAAAAAAA', p);
+			var method = p.length ? 'replaceState' : 'pushState';
+			p = p.length ? '/' + p.join( '+' ) : '';
+			window.History[ method ]( null, null, url.join('/') + p );
+		}.bind( this ) );
 	};
 
 	window.Question = Question;

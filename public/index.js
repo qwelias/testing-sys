@@ -32,11 +32,12 @@
 	window.GUARD = function ( pg, rt, cb ) {
 		var all = [];
 		rt.map( function ( id, i ) {
-			all.push( Promise.all( window._vm.guards[ i ].map( function ( g ) {
+			if ( !id ) return;
+			all.push( Promise.all( ( window._vm.guards[ i ] || [] ).map( function ( g ) {
 				return g( id );
 			} ) ) );
 		} );
-		Promise.all(all).then(cb);
+		Promise.all( all ).then( cb );
 	};
 
 	Promise.all( window._vm.init ).then( function () {

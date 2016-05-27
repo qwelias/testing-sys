@@ -1,3 +1,5 @@
+const OIDRE = new RegExp(/^[a-f\d]{24}$/i);
+
 function Choice( {
 	user,
 	question,
@@ -15,11 +17,12 @@ function Choice( {
         return opt.toLowerCase();
 	} );
 
-	if ( typeof question != 'string' ) throw new Error( 'Invalid input.' );
-	this.question = question;
 
-	if ( typeof user != 'string' ) throw new Error( 'Invalid input.' );
-	this.user = user;
+	if ( !OIDRE.test(String(question)) ) throw new Error( 'Invalid input.' );
+	this.question = String(question);
+
+	if ( !OIDRE.test(String(user)) ) throw new Error( 'Invalid input.' );
+	this.user = String(user);
 };
 
 Object.defineProperties( Choice.prototype, {

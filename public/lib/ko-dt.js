@@ -11,9 +11,9 @@
 		this.class = config.class;
 		this.threshold = config.threshold || 0;
 		this.lastReload = 0;
-		this.actions = ko.observableArray(config.actions || []);
+		this.actions = ko.observableArray( config.actions || [] );
 
-		this.columns.push('action');
+		this.columns.push( 'action' );
 
 		this.totalItems = ko.observable();
 		this.pageIndex = ko.observable( 0 );
@@ -56,11 +56,11 @@
 		} );
 		var rPad = Math.min( totalPages, activePage + radius - ( activePage - radius - Math.max( activePage - radius, 1 ) ) );
 		var lPad = Math.max( activePage - radius - ( activePage + radius - Math.min( totalPages, activePage + radius ) ), 1 );
-		if(lPad != 1){
-			pages.splice(1, lPad-0, "ellipsis");
+		if ( lPad != 1 ) {
+			pages.splice( 1, lPad - 0, "ellipsis" );
 		}
-		if(rPad != totalPages){
-			pages.splice(rPad-totalPages-2, totalPages-rPad+1, "ellipsis");
+		if ( rPad != totalPages ) {
+			pages.splice( rPad - totalPages - 2, totalPages - rPad + 1, "ellipsis" );
 		}
 		return pages;
 	};
@@ -72,36 +72,36 @@
 			this.sortField( row );
 			this.sortOrder( true );
 		}
-		return this.reload(true);
+		return this.reload( true );
 	};
 
 	DataTable.prototype.prevPage = function prevPage() {
 		if ( this.pageIndex() > 0 ) {
 			this.pageIndex( this.pageIndex() - 1 );
-			return this.reload(true);
+			return this.reload( true );
 		}
 	};
 
 	DataTable.prototype.nextPage = function nextPage() {
 		if ( this.pageIndex() + 1 < Math.ceil( this.totalItems() / this.pageSize ) ) {
 			this.pageIndex( this.pageIndex() + 1 );
-			return this.reload(true);
+			return this.reload( true );
 		}
 	};
 
 	DataTable.prototype.moveToPage = function moveToPage( index ) {
 		this.pageIndex( Math.max( Number( index ) - 1, 0 ) );
-		return this.reload(true);
+		return this.reload( true );
 	};
 
-	DataTable.prototype.reload = function reload(force) {
+	DataTable.prototype.reload = function reload( force ) {
 		var now = Date.now();
-		if(now - this.lastReload <= this.threshold && force !== true) return Promise.resolve();
+		if ( now - this.lastReload <= this.threshold && force !== true ) return Promise.resolve();
 		if ( !this.getData ) return Promise.resolve();
 		return this.getData().then( function ( data ) {
-			this.items( data.result.items.map(function(it){
-				return this.class(it);
-			}.bind(this)) );
+			this.items( data.result.items.map( function ( it ) {
+				return this.class( it );
+			}.bind( this ) ) );
 			this.totalItems( data.result.totalItems );
 			this.lastReload = now;
 		}.bind( this ) ).catch( function ( e ) {
@@ -109,17 +109,24 @@
 		} );
 	};
 
-	DataTable.prototype.itemRoute = function itemRoute(item){
-		if(this.goto){
-			if(typeof this.goto == 'function') return this.goto(item);
-			else if(typeof this.goto == 'string') return this.goto + item.initial._id;
+	DataTable.prototype.itemRoute = function itemRoute( item, page ) {
+		var append = null;
+		var url = page ? page.path() : window.History.getState().url;
+		if ( this.goto ) {
+			if ( typeof this.goto == 'function' ) append = this.goto( item );
+			else if ( typeof this.goto == 'string' ) append = this.goto + item.initial._id;
 		}
-		return './'+item.initial._id;
+		if ( append === null ) {
+			return window.History.pushState( null, null, url + '/' + item.initial._id );
+		}
+		if ( append !== undefined ) {
+			return window.History.pushState( null, null, url + append );
+		}
 	};
 
 	function defaultDataGetter() {
 		return function getData() {
-			return window.Server.get( '/api/'+this.class.modelname, {
+			return window.Server.get( '/api/' + this.class.modelname, {
 				size: this.pageSize,
 				index: this.pageIndex(),
 				sort: ( this.sortOrder() ? '+' : '-' ) + this.sortField(),

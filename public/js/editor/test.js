@@ -7,8 +7,7 @@
 			columns: [ 'title' ],
 			defaultSort: 'created',
 			pageSize: 3,
-			threshold: 30 * 1000,
-			goto: '/editor/'
+			threshold: 30 * 1000
 		} ),
 		wo: null,
 		init: function init( id ) {
@@ -24,7 +23,7 @@
 					return Promise.resolve( this.wo = Test( data ) );
 				}.bind( this ) );
 			};
-			return Promise.resolve( this.wo = Test() );
+			if(!this.wo || this.wo.initial._id) return Promise.resolve( this.wo = Test() );
 		}
 	};
 
@@ -38,10 +37,15 @@
 
 	};
 
-	Test.default = {
-		title: '',
-		questions: []
-	};
+	Object.defineProperty( Test, 'default', {
+		enumerable: true,
+		get: function () {
+			return {
+				title: '',
+				questions: []
+			};
+		}
+	} );
 
 	Test.modelname = 'test';
 

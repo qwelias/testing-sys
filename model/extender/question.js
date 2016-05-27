@@ -19,8 +19,11 @@ const useModel = ( model ) => {
 
 };
 
-const useRouter = ( modelname, router ) => {
-
+const useRouter = ( router ) => {
+	router.get( `/:id?`, (req, res, next) => {
+		Log("MUAHAHAHAHAH");
+		next();
+	});
 };
 
 module.exports = {

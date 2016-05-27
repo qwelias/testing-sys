@@ -1,5 +1,5 @@
-<form data-bind="with: _vm.question.wo">
-    <!-- ko alias: 'wo' -->
+<!-- ko foreach: { data: _vm.question.wos, as: 'wo'} -->
+<form>
     <label>
         <textarea type="text"
             data-bind="value: wo.data.body"
@@ -15,20 +15,23 @@
     </label>
     <label>
         <span>Options</span>
-        <a href="" data-bind="click: function(){wo.data.options.push(ko.observable(''))}">
+        <a href=""
+            data-bind="click: function(){wo.data.options.push(ko.observable(''))}">
             <i class="fa fa-plus"
                 aria-hidden="true"></i>
         </a>
         <ul data-bind="foreach: wo.data.options">
             <!-- ko let: { opt: wo.data.options()[$index()] } -->
             <li>
-                <a href="" data-bind="
+                <a href=""
+                    data-bind="
                     visible: ko.toJS(wo.data.correct).indexOf(opt()) > -1,
                     click: function(){wo.data.correct.remove(opt)}">
                     <i class="fa fa-check-circle-o"
                         aria-hidden="true"></i>
                 </a>
-                <a href="" data-bind="
+                <a href=""
+                    data-bind="
                     visible: ko.toJS(wo.data.correct).indexOf(opt()) < 0,
                     click: function(){wo.data.correct.push(opt)}">
                     <i class="fa fa-circle-o"
@@ -37,7 +40,8 @@
                 <input type="text"
                     placeholder="Option"
                     data-bind="value: opt" />
-                <a href="" data-bind="click: function(){
+                <a href=""
+                    data-bind="click: function(){
                     wo.data.options.remove(opt);
                     wo.data.correct.remove(opt)
                 }">
@@ -49,5 +53,17 @@
         </ul>
     </label>
     <button data-bind="click: wo.save">save</button>
-    <!-- /ko -->
 </form>
+<!-- /ko -->
+<!-- ko if: _vm.question.wos.length -->
+<form>
+    <a class="button"
+        href=""
+        data-bind="
+            click:_vm.question.table.itemRoute.bind(_vm.question.table, {
+                initial: {
+                    _id: 'new'
+                }
+            }, $page.parentPage)">new</a>
+</form>
+<!-- /ko -->

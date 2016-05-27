@@ -1,0 +1,32 @@
+<!-- ko with: _vm.test -->
+<!-- ko let: {test: wo} -->
+<h2 data-bind="text: test.initial.title"></h2>
+<ul data-bind="foreach: {data: new Array(test.initial.questions.length).fill(0)}">
+    <li data-bind="text: $index() + 1, click: test.moveTo.bind(test, $index()), css: {active: $index() == test.qIndex()}"></li>
+</ul>
+<form data-bind="with: test.data.questions()[test.qIndex()]">
+    <!-- ko alias: 'q' -->
+    <h4 data-bind="text: q.data.body"></h4>
+    <ul data-bind="foreach: { data: q.data.options, as: 'opt' }">
+        <li>
+            <a href="" data-bind="
+                visible: ko.toJS(q.att.data.body).indexOf(opt) > -1,
+                click: function(){q.att.data.body.remove(opt)}">
+                <i class="fa fa-check-circle-o"
+                    aria-hidden="true"></i>
+            </a>
+            <a href="" data-bind="
+                visible: ko.toJS(q.att.data.body).indexOf(opt) < 0,
+                click: function(){q.att.data.body.push(opt)}">
+                <i class="fa fa-circle-o"
+                    aria-hidden="true"></i>
+            </a>
+            <span data-bind="text: opt"></span>
+        </li>
+    </ul>
+    <button data-bind="click: test.moveNext.bind(test)">next</button>
+    <button data-bind="click: test.finish.bind(test)">finish</button>
+    <!-- /ko -->
+</form>
+<!-- /ko -->
+<!-- /ko -->

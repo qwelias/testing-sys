@@ -18,6 +18,8 @@
             href="css/fa.css">
         <link rel="stylesheet"
             href="css/style.css">
+        <link rel="stylesheet"
+            href="css/test/style.css">
         <script src="lib/promise.js"></script>
         <script src="lib/jq.js"></script>
         <script src="lib/jq.history.js"></script>
@@ -34,7 +36,15 @@
 
     <body>
         <div id="home">
-
+            <div id="test"
+                data-bind="page:{
+                id: 'test',
+                role: 'start',
+                sourceOnShow: 'pages/test.html',
+                guard:GUARD,
+                scrollToTop: false
+            }">
+            </div>
         </div>
     </body>
 
@@ -83,7 +93,7 @@
                     <!-- /ko -->
                     <!-- ko ifnot: columnname == 'action' -->
                     <td data-bind="
-                        page-href: $parent.itemRoute.call($parent, item),
+                        click: $parent.itemRoute.bind($parent, item, $page),
                         text: item.data[columnname]">
                     </td>
                     <!-- /ko -->
@@ -127,6 +137,7 @@
 
     <script src="js/test/test.js"></script>
     <script src="js/test/question.js"></script>
+    <script src="js/test/attempt.js"></script>
     <script src="index.js"></script>
 
 </html>

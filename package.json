@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "buildScss": "node_modules/.bin/node-sass public/scss/ --output-style compressed -o public/css/",
-      "watchScss": "node_modules/.bin/node-sass -w public/scss/ --output-style compressed -o public/css/"
+      "buildScss": "node_modules/.bin/node-sass -r public/scss/ --output-style compressed -o public/css/",
+      "watchScss": "node_modules/.bin/node-sass -wr public/scss/ --output-style compressed -o public/css/"
   },
   "repository": {
     "type": "git",

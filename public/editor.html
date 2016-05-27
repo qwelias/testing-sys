@@ -18,6 +18,8 @@
             href="css/fa.css">
         <link rel="stylesheet"
             href="css/style.css">
+        <link rel="stylesheet"
+            href="css/editor/style.css">
         <script src="lib/promise.js"></script>
         <script src="lib/jq.js"></script>
         <script src="lib/jq.history.js"></script>
@@ -91,7 +93,7 @@
                     <!-- /ko -->
                     <!-- ko ifnot: columnname == 'action' -->
                     <td data-bind="
-                        page-href: $parent.itemRoute.call($parent, item),
+                        click: $parent.itemRoute.bind($parent, item, $page),
                         text: item.data[columnname]">
                     </td>
                     <!-- /ko -->

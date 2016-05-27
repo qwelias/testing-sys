@@ -13,11 +13,12 @@
 	};
 
 	SObject.fromJS = function fromJS( o ) {
+		var out = {};
 		Object.keys( o ).map( function ( k ) {
-			if ( Array.isArray( o[ k ] ) ) o[ k ] = ko.observableArray( o[ k ] );
-			else o[ k ] = ko.observable( o[ k ] );
+			if ( Array.isArray( o[ k ] ) ) out[ k ] = ko.observableArray( o[ k ] );
+			else out[ k ] = ko.observable( o[ k ] );
 		} );
-		return o;
+		return out;
 	};
 
 	SObject.prototype.toJS = function toJS() {

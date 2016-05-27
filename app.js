@@ -43,6 +43,7 @@ app.use( '/api', require( './router' ) );
 
 app.use( '/editor*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'editor.html' ) ) );
 app.use( '/test*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'test.html' ) ) );
+app.use( '/*', ( req, res ) => res.redirect('/test') );
 
 http.listen( config.PORT, () => {
 	Log( 'listening on ', config.PORT );
