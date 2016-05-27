@@ -1,11 +1,15 @@
-
+<div>
+    <a class="button"
+        href=""
+        data-bind="page-href:'/editor/new'">new</a>
+</div>
 <div class="content-table"
     data-bind="template: {name: 'default-table-tmpl', data: _vm.test.table}"></div>
 
-<div id="testing"
+<div id="test-edit"
     data-bind="page: {
             id: '?',
-            sourceOnShow: 'pages/testing.html',
+            sourceOnShow: 'pages/editor/edit-t.html',
             scrollToTop: false
         }">
 </div>

@@ -19,7 +19,7 @@
         <link rel="stylesheet"
             href="css/style.css">
         <link rel="stylesheet"
-            href="css/editor/style.css">
+            href="css/test/style.css">
         <script src="lib/promise.js"></script>
         <script src="lib/jq.js"></script>
         <script src="lib/jq.history.js"></script>
@@ -36,14 +36,14 @@
 
     <body>
         <div id="home">
-            <div id="editor"
-                data-bind="page: {
-                    id: 'editor',
-                    role: 'start',
-                    sourceOnShow: 'pages/editor/tests.html',
-                    guard:GUARD,
-                    scrollToTop: false
-                }">
+            <div id="test"
+                data-bind="page:{
+                id: 'test',
+                role: 'start',
+                sourceOnShow: 'pages/test.html',
+                guard:GUARD,
+                scrollToTop: false
+            }">
             </div>
         </div>
     </body>
@@ -135,8 +135,9 @@
         <!-- /ko -->
     </script>
 
-    <script src="js/editor/test.js"></script>
-    <script src="js/editor/question.js"></script>
+    <script src="js/result/test.js"></script>
+    <script src="js/result/question.js"></script>
+    <script src="js/result/attempt.js"></script>
     <script src="index.js"></script>
 
 </html>
