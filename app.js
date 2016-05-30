@@ -43,8 +43,13 @@ app.use( '/api', require( './router' ) );
 
 app.use( '/editor*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'editor.html' ) ) );
 app.use( '/test*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'test.html' ) ) );
+app.use( '/result*', ( req, res ) => res.sendFile( Path.resolve( config.root, 'public', 'result.html' ) ) );
 app.use( '/*', ( req, res ) => res.redirect('/test') );
 
 http.listen( config.PORT, () => {
 	Log( 'listening on ', config.PORT );
 } );
+
+// mongoose.model('test').findOne({title: 'FINE'}).exec().then(t => {
+// 	t.attempts("5745a34ba2d202b23fec278d").then( res => Log('', res));
+// });

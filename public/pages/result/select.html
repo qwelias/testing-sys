@@ -1,0 +1,39 @@
+<div class="content-table"
+    data-bind="template: {name: 'default-table-tmpl', data: _vm.test.table}"></div>
+<div class="content-table">
+    Типо таблица юзеров, кликаешь в юзера, он падает в _vm.test.user(), как и с тестами соседними
+</div>
+
+<div id="result" data-bind="visible: _vm.test.test() && _vm.test.user()">
+    <!-- ko with: _vm.test.wo -->
+    <h2 data-bind="text: initial.title + ' (' + _vm.test.user().initial._id + ')'"></h2>
+    <ul data-bind="foreach: {data: new Array(initial.questions.length).fill(0)}">
+        <li data-bind="text: $index() + 1, click: $parent.moveTo.bind($parent, $index()), css: {active: $index() == $parent.qIndex()}"></li>
+    </ul>
+    <form data-bind="with: initial.questions[qIndex()]">
+        <!-- ko alias: 'q' -->
+        <h4 data-bind="text: q.initial.body"></h4>
+        <ul data-bind="foreach: { data: q.initial.options, as: 'opt' }">
+            <li data-bind="css:{
+                right: Question.prototype.check.call(q, opt),
+                wrong: !Question.prototype.check.call(q, opt)
+            }">
+                <a data-bind="
+                    visible: q.att.initial.body.indexOf(opt) > -1">
+                    <i class="fa fa-check-circle-o"
+                        aria-hidden="true"></i>
+                </a>
+                <a data-bind="
+                    visible: q.att.initial.body.indexOf(opt) < 0">
+                    <i class="fa fa-circle-o"
+                        aria-hidden="true"></i>
+                </a>
+                <span data-bind="text: opt"></span>
+            </li>
+        </ul>
+        <button data-bind="click: $parent.moveNext.bind($parent)">next</button>
+        <!-- /ko -->
+    </form>
+    <!-- /ko -->
+
+</div>

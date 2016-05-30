@@ -1,0 +1,61 @@
+$bGreyColor: rgb(180, 180, 180);
+$bgGreyColor: rgb(245, 245, 245);
+
+div.content-table {
+    width: 49.4%;
+    display: inline-block;
+}
+
+div#result {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: solid 1px $bGreyColor;
+    text-align: center;
+
+    > ul {
+        padding: 0;
+        list-style: none;
+        padding-bottom: 0.5em;
+        border-bottom: dashed 1px $bGreyColor;
+
+        > li {
+            font-size: 1.2em;
+            background-color: $bgGreyColor;
+            cursor: pointer;
+            padding: 0 0.5em;
+            display: inline-block;
+
+            &.active {
+                background-color: rgb(224, 224, 224);
+            }
+        }
+    }
+
+    > form {
+        text-align: left;
+
+        > ul {
+            list-style: none;
+
+            > li {
+                padding-bottom: 0.2em;
+
+                > a {
+                    color: inherit;
+                }
+
+                &.right {
+                    > a {
+                        color: green;
+                    }
+                }
+
+                &.wrong {
+                    > a {
+                        color: red;
+                    }
+                }
+            }
+        }
+    }
+}
